@@ -32,12 +32,12 @@ def book_ticket(connection):
         cursor.callproc('BookTicket', [customer_id, screening_id, seat_number])
         connection.commit()
         
-        print("\n✅ SUCCESS: Ticket booked successfully!")
+        print("\nSUCCESS: Ticket booked successfully!")
         cursor.close()
     except Error as e:
-        print(f"\n❌ FAILED: Database Error - {e}")
+        print(f"\nFAILED: Database Error - {e}")
     except ValueError:
-        print("\n❌ Invalid input. Please enter valid numbers.")
+        print("\nInvalid input. Please enter valid numbers.")
 
 def generate_report(connection):
     """Generate daily screening report using the DailyScreeningsSummary view."""
@@ -60,3 +60,20 @@ def generate_report(connection):
         cursor.close()
     except Error as e:
         print(f"Error generating report: '{e}'")
+
+def cancel_ticket(connection):
+    """Handle ticket cancellation using the CancelTicket stored procedure."""
+    print("\n--- CANCEL A TICKET ---")
+    try:
+        ticket_id = int(input("Enter the Ticket ID you want to cancel: "))
+
+        cursor = connection.cursor()
+        cursor.callproc('CancelTicket', [ticket_id])
+        connection.commit()
+        
+        print("\nSUCCESS: Ticket cancelled successfully! Seat is now available.")
+        cursor.close()
+    except Error as e:
+        print(f"\nFAILED: Database Error - {e}")
+    except ValueError:
+        print("\nInvalid input. Please enter a valid Ticket ID number.")
